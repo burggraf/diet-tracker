@@ -1,8 +1,7 @@
+import SelectFromListModal from '$components/SelectItemFromListModal.svelte'
 // import { modalController } from '$app/navigation';
 // import { showConfirm } from '$services/alert.service';
 import { modalController } from '$ionic/svelte'
-import SelectFromListModal from '$components/SelectItemFromListModal.svelte'
-
 
 export const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -77,5 +76,12 @@ export const selectItemFromList = async (obj: any) => {
   await openModal.present()
   const { data } = await openModal.onWillDismiss();
   return {data};
+}
+
+export const getToday = () => {
+  const date = new Date();
+  return new Date(date.getTime())
+                  .toISOString()
+                  .split("T")[0];
 }
 
