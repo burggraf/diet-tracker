@@ -35,6 +35,7 @@
 
 		if (id === 'new') {
 			day = {
+					id: '',
 					user_id: $currentUser?.id || null,
 					date: new Date().toISOString().substring(0, 10),
 					food_log: { entries: [] },
@@ -48,8 +49,9 @@
 
 			// do we have an entry for today already?
 			console.log('do we have an entry for today already?', getToday())
+			console.log(`date='${getToday()}'`)
 			const data = await pb.collection('days').getFirstListItem(
-				`date=${getToday()}`, {
+				`date~'${getToday()}'`, {
 					fields: '*',
 			});
 			if (data) {
@@ -114,8 +116,23 @@
 	}
 	const save = async () => {
 		// validate here...
-		console.log('not implemented')
-		toast('not implemented', 'danger')
+		console.log('*** save: day', day);
+		try {
+			day.food_total = 0
+			day.food_log.entries.forEach((entry: any) => {
+				day.food_total += (entry?.amt || 0)
+			})
+		} catch (err) {
+			console.error('error calculating food total', err)
+		}		
+		if (day.id === '') {
+			const record = await pb.collection('days').create(day);
+			console.log('*** save (create): record', record);
+			day.id = record.id;
+		} else {
+			const record = await pb.collection('days').update(day.id, day);
+			console.log('*** save (update): record', record);
+		}
 	}
 	const delete_day = async () => {
 		await showConfirm({
