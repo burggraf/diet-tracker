@@ -5,6 +5,9 @@
 	import food from '$services/food.json'
 
 	import { closeOutline } from 'ionicons/icons'
+	import { search_internet, search_food_log } from './FoodSearchModal'
+	import { loadingBox } from '$services/loadingMessage'
+	import { toast } from '$services/toast'
 
 	let mode = 'database'
 	let debounce_value = 500
@@ -13,16 +16,17 @@
 	const closeOverlay = () => {
 		modalController.dismiss({ data: null })
 	}
-	let filteredFood = []
+	let filteredFood: any = []
 
 	function save(item: any) {
 		modalController.dismiss({ data: item })
 	}
-	async function search($event) {
+	async function search($event: any) {
 		let s = $event.target.value.trim().toLowerCase()
 		complete_search(s)
 	}
 	async function complete_search(s: string) {
+		console.log('complete_search', s)
 		switch (mode) {
 			case 'database':
 				if (s != '') {
@@ -35,36 +39,70 @@
 				break
 			case 'history':
 				if (s === last_search) {
-					console.log('serach value not changed, aborting')
+					console.log('search value not changed, aborting')
 					return
 				}
 				if (s != '') {
-					// console.log('*** SEARCH HISTORY ***')
-					// const { data, error } = await supabaseDataService.search_food_log(s)
-					// if (error) {
-					// 	console.error(error)
-					// } else {
-					// 	filteredFood = data
-					// }
-					// console.log('data', data)
-					// console.log('error', error)
+					s = s.toLowerCase().trim();
+					console.log('*** SEARCH HISTORY ***')
+					const { data, error } = await search_food_log(s)
+					if (error) {
+						console.error(error)
+						toast(error, 'danger')
+					} else {
+						const items: any = []
+						for (let i = 0; i < data.length; i++) {
+							const entries = data[i].food_log.entries;
+							for (let j = 0; j < entries.length; j++) {
+								const entry = entries[j];
+								if (entry.title.toLowerCase().indexOf(s) > -1 ||
+									entry.desc.toLowerCase().indexOf(s) > -1) {
+									items.push({
+										title: entry.title,
+										desc: entry.desc,
+										calories: entry.cps
+									})
+								}
+							}
+						}
+						console.log('items', items)
+						if (items.length === 0) {
+							items.push({
+										title: 'Not found',
+										desc: '',
+										calories: ''
+									})
+						}
+						console.log('items', items)
+						filteredFood = items
+					}
+					console.log('data', data)
+					console.log('error', error)
 				} else {
 					filteredFood = []
 				}
 				last_search = s
 				break
 			case 'internet':
-				if (s != '') {
-					// const { data, error } = await supabaseDataService.search_internet(s)
-					// if (error) {
-					// 	console.error(error)
-					// } else {
-					// 	filteredFood = data
-					// }
-					// console.log('data', data)
-					// console.log('error', error)
-				} else {
-					filteredFood = []
+				try {
+					console.log('internet search', s)
+					if (s.trim() != '') {
+						console.log('filtered food length', filteredFood.length)
+						const loader = await loadingBox('Searching internet...')
+						const { data, error } = await search_internet(s)
+						loader.dismiss()
+						if (error) {
+							console.error('internet search ERROR', error)
+						} else {						
+							filteredFood = data
+						}
+						console.log('data', data)
+						console.log('error', error)
+					} else {
+						filteredFood = []
+					}
+				} catch (err) {
+					console.error('internet search ERROR block', err)
 				}
 				break
 		}
