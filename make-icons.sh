@@ -15,6 +15,7 @@ sips -Z 168 static/icon-2048.png --out static/icon-168.png
 sips -Z 167 static/icon-2048.png --out static/icon-167.png
 sips -Z 152 static/icon-2048.png --out static/icon-152.png
 sips -Z 150 static/icon-2048.png --out static/icon-150.png
+sips -Z 144 static/icon-2048.png --out static/icon-144.png
 sips -Z 128 static/icon-2048.png --out static/icon-128.png
 sips -Z 120 static/icon-2048.png --out static/icon-120.png
 sips -Z 96 static/icon-2048.png --out static/icon-96.png
