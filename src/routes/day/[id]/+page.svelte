@@ -37,7 +37,7 @@
 			day = {
 					id: '',
 					user_id: $currentUser?.id || null,
-					date: new Date().toISOString().substring(0, 10),
+					date: getToday(),
 					food_log: { entries: [] },
 					food_total: 0,
 					activity_log: { entries: [] },
@@ -64,7 +64,10 @@
 			
 			id = day.id
 		} else {
-
+			const data = await pb.collection('days').getOne(id)
+			if (data) {
+				day = data
+			}
 		}
 	}
 	init();
@@ -166,8 +169,7 @@
 			cat: '',
 			cps: 0,
 			qty: 1.0,
-			amt: 0,
-			created: new Date().toISOString(),
+			amt: 0
 		}
 
 		const saved = await openFoodEntryBox(entry, day.food_log.entries.length, true)

@@ -80,8 +80,12 @@ export const selectItemFromList = async (obj: any) => {
 
 export const getToday = () => {
   const date = new Date();
-  return new Date(date.getTime())
-                  .toISOString()
-                  .split("T")[0];
+  return date.toLocaleDateString('en-CA'); // 'en-CA' uses the format YYYY-MM-DD
 }
+// export const getToday = () => {
+//   const date = new Date();
+//   return new Date(date.getTime())
+//                   .toISOString()
+//                   .split("T")[0];
+// }
 

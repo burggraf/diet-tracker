@@ -55,8 +55,8 @@
 		}
 	}
 	const handleDate = async (event) => {
-		const theDate = new Date(event.target.value);
-		const { data, error } = await supabaseDataService.getDayId(theDate.toISOString().substring(0,10));
+		const theDate = new Date(event.target.value).toLocaleDateString().substring;
+		const { data, error } = await supabaseDataService.getDayId(theDate);
 		if (data && data.id) {
 			gotoDay(data.id);
 		} else {
