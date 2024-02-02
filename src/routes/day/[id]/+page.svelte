@@ -78,18 +78,19 @@
 			return
 		}
 		if (id === 'new') {
-			try {
-				// const { data, error } = await supabaseDataService.getCurrentWeight()
-				// if (error) {
-				// 	console.error('getCurrentWeight error', error)
-				// 	day.weight = 0
-				// } else {
-				// 	day.weight = data.weight
-				// }
-			} catch (ex) {
-				// console.error('exception', ex)
-				// day.weight = 0
-			}
+			    day.weight = 0;
+				try {
+					const record = await pb.collection('days').getFirstListItem(
+						'weight > 0', {
+						fields: 'weight',
+						sort: '-date',
+					});
+					if (record) {
+						day.weight = record.weight;
+					} 
+				} catch (error) {
+					// no weight found
+				}
 		}
 	})
 
