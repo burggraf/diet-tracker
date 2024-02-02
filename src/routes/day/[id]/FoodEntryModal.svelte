@@ -267,7 +267,7 @@ day.food_log.entries[day.food_log.entries.length - 1].amt = 0 -->
                         on:ionChange={handleTextValue}
                         name="desc"
                         class="formTextarea"
-                        type="text" 
+                        rows={4}
                         value={entry.desc}
                         placeholder="Description">
                     </ion-textarea>
@@ -341,6 +341,9 @@ day.food_log.entries[day.food_log.entries.length - 1].amt = 0 -->
       text-align: center;
   }
   .formTextarea {
+      --padding-start: 10px;
+      padding-left: 10px;
+      /* --padding-top: 10px; */
       border: 1px solid rgb(212, 212, 212);
       background-color: var(--ion-background-color) !important;
       border-radius: 5px;
