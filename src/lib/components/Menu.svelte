@@ -72,7 +72,7 @@
 		{
 			title: 'Account',
 			url: 'account',
-			icon: 'personOutlne',
+			icon: 'personOutline',
 			children: [],
 			disabled: (!$currentUser)
 		},
@@ -86,16 +86,22 @@
 		// 	],
 		// },
 		{
-			title: 'Information & Support',
-			url: 'informationMenu',
+			title: 'Information',
+			url: 'about',
 			icon: 'informationCircle',
-			children: [
-				{ title: 'About Diet Tracker', url: 'about', icon: 'map', disabled: false },
-				{ title: 'Terms of Service', url: 'terms', icon: 'map', disabled: false },
-				{ title: 'Privacy Policy', url: 'privacy', icon: 'map', disabled: false },
-				{ title: 'Support', url: 'support', icon: 'map', disabled: false },
-			],
+			children: [],
 		},
+		// {
+		// 	title: 'Information & Support',
+		// 	url: 'informationMenu',
+		// 	icon: 'informationCircle',
+		// 	children: [
+		// 		{ title: 'About Diet Tracker', url: 'about', icon: 'map', disabled: false },
+		// 		{ title: 'Terms of Service', url: 'terms', icon: 'map', disabled: false },
+		// 		{ title: 'Privacy Policy', url: 'privacy', icon: 'map', disabled: false },
+		// 		{ title: 'Support', url: 'support', icon: 'map', disabled: false },
+		// 	],
+		// },
 		// {
 		// 	title: 'Settings & Profile',
 		// 	url: 'settingsMenu',
