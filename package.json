@@ -2,7 +2,7 @@
   "name": "diet-tracker",
   "short_name": "diet-tracker",
   "description": "diet-tracker",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "private": true,
   "homepage": "https://github.com/burggraf/diet-tracker",
   "menu_title": "Diet Tracker",
