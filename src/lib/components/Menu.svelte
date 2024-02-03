@@ -232,20 +232,7 @@
 			Terms of Service
 		</div>
 		<br />
-		<div class="pointer centered" on:click={toggleDebugger}>{app_name} {app_version}</div>
-		<div id="debugger" class="hidden">
-			<span
-				class="pointer"
-				on:click={() => {
-					localStorage.clear()
-				}}>clear cache</span
-			>
-			<span class="pointer span-on-right" on:click={toggleOnlineStatus}>
-				<ion-label color={$isOnline ? 'success' : 'danger'}
-					><b>{$isOnline ? 'Online' : 'Offline'}</b></ion-label
-				>
-			</span>
-		</div>
+		<div class="centered">{app_name} {app_version}</div>
 		<br />
 	</ion-footer>
 </ion-menu>
