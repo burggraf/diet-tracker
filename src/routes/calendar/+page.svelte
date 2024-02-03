@@ -54,16 +54,47 @@
 			el.classList.toggle('hidden');
 		}
 	}
-	const handleDate = async (event) => {
-		const theDate = new Date(event.target.value).toLocaleDateString().substring;
-		const { data, error } = await supabaseDataService.getDayId(theDate);
-		if (data && data.id) {
-			gotoDay(data.id);
-		} else {
-			//console.log('** handleDate', data, error);
-			gotoDay(theDate.toISOString().substring(0,10));
+	const handleDate = async (event: any) => {
+		console.log('** handleDate', event.target.value);
+		const theDate = event.target.value.substring(0,10);
+		try {
+			const record = await pb.collection('days').getFirstListItem(
+				`date~"${theDate}"`, {
+					fields: 'id'
+			});
+			if (record?.id) {
+				gotoDay(record.id);
+			}
+
+		} catch (err) {
+			console.log('date not found', theDate)
+			console.log('we\'ll create a new day')
+			const data = {
+				user_id: $currentUser?.id || null,
+				date: theDate,
+				food_log: { entries: [] },
+				food_total: 0,
+				activity_log: { entries: [] },
+				water_log: { entries: [] },
+				water_total: 0,
+				weight: 0,
+				notes: '',
+			}
+			const record = await pb.collection('days').create(data);
+			if (record?.id) {
+				gotoDay(record.id);
+			}
 		}
-		// day.date = event.target.value
+
+
+		// const theDate = new Date(event.target.value).toLocaleDateString().substring;
+		// const { data, error } = await supabaseDataService.getDayId(theDate);
+		// if (data && data.id) {
+		// 	gotoDay(data.id);
+		// } else {
+		// 	//console.log('** handleDate', data, error);
+		// 	gotoDay(theDate.toISOString().substring(0,10));
+		// }
 	}
 
 </script>
