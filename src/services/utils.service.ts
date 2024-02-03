@@ -85,3 +85,4 @@ export const getToday = () => {
   const day = `0${date.getDate()}`.slice(-2);
   return `${year}-${month}-${day}`;
 };
+
