@@ -2,7 +2,7 @@
 	import IonPage from '$ionic/svelte/components/IonPage.svelte'
 	import { currentUser, pb } from '$services/backend.service'
 	import { onMount, onDestroy } from 'svelte'
-	import { addOutline } from 'ionicons/icons'
+	import { addOutline, calendarClear, calendarOutline } from 'ionicons/icons'
 	import { goto } from '$app/navigation'
     import { getToday } from '$services/utils.service'
 	let settings = {
@@ -55,6 +55,7 @@
 		}
 	}
 	const handleDate = async (event: any) => {
+		console.log('** handleDate', event);
 		console.log('** handleDate', event.target.value);
 		const theDate = event.target.value.substring(0,10);
 		try {
@@ -105,7 +106,7 @@
 			<ion-buttons slot="start">
 				<ion-menu-button />
 			</ion-buttons>
-			<ion-title on:click={toggleDatePicker}>Calendar</ion-title>
+			<ion-title on:click={toggleDatePicker}><ion-icon icon={calendarOutline} />&nbsp;Calendar</ion-title>
 			<ion-buttons slot="end">
 				<ion-button on:click={() => gotoDay('new')}>
 					<ion-icon slot="icon-only" icon={addOutline} />
@@ -116,7 +117,15 @@
 
 	<ion-content class="ion-padding">
 		<div class="centered">
-			<ion-datetime id="datepicker" class="hidden" on:click={handleDate}></ion-datetime>
+			<ion-datetime 
+				show-default-buttons={true}
+				presentation="date" 
+				id="datepicker" 
+				class="hidden" 
+				on:ionCancel={toggleDatePicker}
+				on:ionChange={handleDate}
+				></ion-datetime>
+			<!-- <br/><ion-button size="small" on:click={toggleDatePicker}>Select Date</ion-button> -->
 		</div>
 		<ion-list>
 			{#if days && days.length}
