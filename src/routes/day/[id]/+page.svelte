@@ -142,9 +142,18 @@
 		await showConfirm({
 			header: 'Delete Day',
 			message: 'Are you sure?',
-			okHander: async () => {
-				console.log('not implemented')
-				toast('not implemented', 'danger')
+			okHandler: async () => {
+				console.log("id", id)
+				if (id !== 'new' && id.length > 0) {
+					try {
+						const result = await pb.collection('days').delete(id);
+						console.log('*** delete_day: result', result);
+						goBack()
+					} catch (err) {
+						console.error('error deleting day', err)
+					} finally {
+					}
+				}
 				// const { data, error } = await supabaseDataService.delete_day(day)
 				// if (error) {
 				// 	console.error('Error deleting day', error)

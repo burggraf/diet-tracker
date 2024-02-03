@@ -67,7 +67,7 @@
 		{/if}
 	</ion-header>
 	<ion-content class="ion-padding">
-		<div class="width-400">
+		<div class="safearea width-400">
 			{#if $currentUser}
 				<div class="ion-text-center" style="display: flex; align-items: center; justify-content: center; margin-top: -30px; margin-bottom: 0px;">
 					<ion-img
@@ -135,6 +135,10 @@
 </IonPage>
 
 <style>
+	.safearea {
+		--ion-safe-area-top: 60px;
+		--safe-area-inset-top: 60px;
+	}
 	.padded {
 		padding-left: 5px;
 		padding-right: 5px;
