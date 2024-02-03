@@ -34,7 +34,7 @@
 		const openLoginModalController = await modalController.create({
 			component: LoginModal,
 			componentProps: {
-				providers: ['google', 'github'],
+				providers: ['google', 'facebook', 'github'],
 				onSignIn: () => {
 					goto('/calendar')
 				},
