@@ -243,6 +243,22 @@
 		day.water_total--
 		save()
 	}
+	async function upActivity() {
+		day.activity_log.entries.push({
+			id: '',
+			amt: 1,
+			created: new Date().toISOString(),
+		})
+		day.activity_total++
+		save()
+	}
+	async function downActivity() {
+		if (day.activity_total <= 0) return
+		// find the last entry and delete it
+		day.activity_log.entries.pop()
+		day.activity_total--
+		save()
+	}
 	function handleNumberValue(event: any) {
 		try {
 			day[event.target.name] = parseFloat(event.target.value!) || 0
@@ -390,13 +406,31 @@
 								on:ionBlur={saveOnBlur}
 								name="weight"
 								class="weightBox"
-								type="decimal"
+								type="number"
 								inputmode="decimal"
 								value={day?.weight}
 							/>
 						</div>
 					</div>
 				</ion-col>
+
+				<ion-col>
+					<div class="center">
+						<div class="footertitle">Activity</div>
+						<div class="footertitle together">
+							<ion-icon
+								color={day.activity_total <= 0 ? 'medium' : 'dark'}
+								icon={removeCircleOutline}
+								size="large"
+								on:click={downActivity}
+							/>
+							<span class="water-digits">&nbsp;{day.activity_total || 0}&nbsp;</span>
+							<ion-icon icon={addCircleOutline} size="large" on:click={upActivity} />
+						</div>
+					</div>
+				</ion-col>
+
+
 				<ion-col>
 					<div class="right">
 						<div class="footertitle">Water</div>
@@ -430,7 +464,7 @@
 	.water-digits {
 		/* font-size: 2em; */
 		/* font-weight: bold; */
-		font-size: 2em;
+		font-size: 1.7em;
 		/* font-family: 'Courier New', Courier, monospace; */
 	}
 	.water-line {
@@ -476,6 +510,9 @@
 	}
 	.left {
 		text-align: left;
+	}
+	.center {
+		text-align: center;
 	}
 	.right {
 		text-align: right;

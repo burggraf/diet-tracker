@@ -65,8 +65,9 @@
             if (day.food_total > 0) calorieTotals.push(day.food_total)
             if (day.water_total > 0) waterTotals.push(day.water_total)
             if (day.activity_total > 0) activityTotals.push(day.activity_total)
-            labels.push((new Date(day.date.substring(0, 10)).toDateString()).substring(4))
+            labels.push(day.date.substring(5,10) + '-' + day.date.substring(0,4));    
         })
+        console.log("labels", labels)
         createChart('weight', 'Weight', labels, [
 			{
 				label: 'Weight',
