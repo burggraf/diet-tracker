@@ -3,7 +3,7 @@
 	import IonPage from '$ionic/svelte/components/IonPage.svelte'
 	import { page } from '$app/stores'
 
-    import { goto } from '$app/navigation'
+	import { goto } from '$app/navigation'
 	import { toast } from '$services/toast'
 	import {
 		chevronBackOutline,
@@ -35,34 +35,35 @@
 
 		if (id === 'new') {
 			day = {
-					id: '',
-					user_id: $currentUser?.id || null,
-					date: getToday(),
-					food_log: { entries: [] },
-					food_total: 0,
-					activity_log: { entries: [] },
-					water_log: { entries: [] },
-					water_total: 0,
-					weight: 0,
-					notes: '',
-				}
-
-			// do we have an entry for today already?
-			console.log('do we have an entry for today already?', getToday())
-			console.log(`date='${getToday()}'`)
-			const data = await pb.collection('days').getFirstListItem(
-				`date~'${getToday()}'`, {
+				id: '',
+				user_id: $currentUser?.id || null,
+				date: getToday(),
+				food_log: { entries: [] },
+				food_total: 0,
+				activity_log: { entries: [] },
+				water_log: { entries: [] },
+				water_total: 0,
+				weight: 0,
+				notes: '',
+			}
+			try {
+				// do we have an entry for today already?
+				console.log('do we have an entry for today already?', getToday())
+				console.log(`date='${getToday()}'`)
+				const data = await pb.collection('days').getFirstListItem(`date~'${getToday()}'`, {
 					fields: '*',
-			});
-			if (data) {
-				console.log('found existing day', data)
-				day = data;
-			} else {
-				console.log('did not find existing day', data)
+				})
+				if (data) {
+					console.log('found existing day', data)
+					day = data
+				} else {
+					console.log('did not find existing day', data)
+				}
+				id = day.id
+			} catch (err) {
+				console.log('could not find day, this is new')
 			}
 
-			
-			id = day.id
 		} else {
 			const data = await pb.collection('days').getOne(id)
 			if (data) {
@@ -70,7 +71,7 @@
 			}
 		}
 	}
-	init();
+	init()
 
 	onMount(async () => {
 		if (!$currentUser) {
@@ -78,19 +79,18 @@
 			return
 		}
 		if (id === 'new') {
-			    day.weight = 0;
-				try {
-					const record = await pb.collection('days').getFirstListItem(
-						'weight > 0', {
-						fields: 'weight',
-						sort: '-date',
-					});
-					if (record) {
-						day.weight = record.weight;
-					} 
-				} catch (error) {
-					// no weight found
+			day.weight = 0
+			try {
+				const record = await pb.collection('days').getFirstListItem('weight > 0', {
+					fields: 'weight',
+					sort: '-date',
+				})
+				if (record) {
+					day.weight = record.weight
 				}
+			} catch (error) {
+				// no weight found
+			}
 		}
 	})
 
@@ -120,22 +120,22 @@
 	}
 	const save = async () => {
 		// validate here...
-		console.log('*** save: day', day);
+		console.log('*** save: day', day)
 		try {
 			day.food_total = 0
 			day.food_log.entries.forEach((entry: any) => {
-				day.food_total += (entry?.amt || 0)
+				day.food_total += entry?.amt || 0
 			})
 		} catch (err) {
 			console.error('error calculating food total', err)
-		}		
+		}
 		if (day.id === '') {
-			const record = await pb.collection('days').create(day);
-			console.log('*** save (create): record', record);
-			day.id = record.id;
+			const record = await pb.collection('days').create(day)
+			console.log('*** save (create): record', record)
+			day.id = record.id
 		} else {
-			const record = await pb.collection('days').update(day.id, day);
-			console.log('*** save (update): record', record);
+			const record = await pb.collection('days').update(day.id, day)
+			console.log('*** save (update): record', record)
 		}
 	}
 	const delete_day = async () => {
@@ -143,11 +143,11 @@
 			header: 'Delete Day',
 			message: 'Are you sure?',
 			okHandler: async () => {
-				console.log("id", id)
+				console.log('id', id)
 				if (id !== 'new' && id.length > 0) {
 					try {
-						const result = await pb.collection('days').delete(id);
-						console.log('*** delete_day: result', result);
+						const result = await pb.collection('days').delete(id)
+						console.log('*** delete_day: result', result)
 						goBack()
 					} catch (err) {
 						console.error('error deleting day', err)
@@ -179,7 +179,7 @@
 			cat: '',
 			cps: 0,
 			qty: 1.0,
-			amt: 0
+			amt: 0,
 		}
 
 		const saved = await openFoodEntryBox(entry, day.food_log.entries.length, true)
@@ -198,8 +198,8 @@
 		const item = day.food_log.entries.splice(from, 1)[0]
 		day.food_log.entries.splice(to, 0, item)
 		const newItems = [...day.food_log.entries]
-		save();
-		detail.complete(newItems);
+		save()
+		detail.complete(newItems)
 	}
 
 	const openFoodEntryBox = async (entry: any, index: number, isNew: boolean) => {
@@ -326,17 +326,18 @@
 			</ion-row>
 		</ion-grid>
 		<ion-list lines="full">
-			<ion-reorder-group id="food_log_group" disabled={false} 
-				on:ionItemReorder={
-					(evt) => {
-						evt.stopPropagation();
-						evt.preventDefault();
-						reorder_food_log(evt);
-						evt.stopPropagation();
-						evt.preventDefault();
-					}
-				}>
-				{#each (day?.food_log?.entries || []) as entry, index}
+			<ion-reorder-group
+				id="food_log_group"
+				disabled={false}
+				on:ionItemReorder={(evt) => {
+					evt.stopPropagation()
+					evt.preventDefault()
+					reorder_food_log(evt)
+					evt.stopPropagation()
+					evt.preventDefault()
+				}}
+			>
+				{#each day?.food_log?.entries || [] as entry, index}
 					<ion-item
 						on:click={() => {
 							edit_food_log_entry(index)
