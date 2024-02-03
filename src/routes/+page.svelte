@@ -1,6 +1,4 @@
 <script lang="ts">
-	console.log('ROOT PAGE')
-
 	import IonPage from '$ionpage'
 	import '$styles/grid-styles.css'
 	import * as allIonicIcons from 'ionicons/icons'
@@ -13,7 +11,9 @@
 	// import { page } from '$app/stores';
 	import { onMount } from 'svelte'
 	import { currentState } from '$services/state.service'
-
+	import { getToday } from '$services/utils.service'
+	import { pb } from '$services/backend.service'
+	import { calendarNumberOutline, calendarOutline, todayOutline } from 'ionicons/icons'
 	//export let providers: Provider[] = [];
 	export const providers: string[] = []
 	export const onSignIn: Function = () => {}
@@ -28,14 +28,6 @@
 			goto(page)
 		}
 		return () => {}
-		if ($currentUser && $currentState.selectedMenuItem) {
-			console.log('**********************************')
-			console.log('$currentState.selectedMenuItem', $currentState.selectedMenuItem)
-			console.log('going to', $currentState.selectedMenuItem)
-			console.log('**********************************')
-			//goto($currentState.selectedMenuItem);
-		}
-		return () => {}
 	})
 
 	const openLoginBox = async () => {
@@ -44,7 +36,7 @@
 			componentProps: {
 				providers: ['google', 'github'],
 				onSignIn: () => {
-					goto('/welcome')
+					goto('/calendar')
 				},
 			},
 			showBackdrop: true,
@@ -53,9 +45,30 @@
 
 		await openLoginModalController.present()
 	}
+	let todaysID = ''
+	const ionViewWillEnter = async () => {
+		console.log('** ionViewWillEnter')
+		if ($currentUser) {
+			console.log('** ionViewWillEnter - $currentUser', $currentUser)
+			if ($currentUser) {
+				const today = getToday()
+				try {
+					const recordset = await pb
+						.collection('days')
+						.getFirstListItem(`date~"${today}"`, { fields: 'id' })
+					if (recordset) {
+						todaysID = recordset.id
+					}
+				} catch (err) {
+					console.log('no entry for today yet')
+				}
+				// goto('/calendar')
+			}
+		}
+	}
 </script>
 
-<IonPage>
+<IonPage {ionViewWillEnter}>
 	<ion-header>
 		{#if $currentUser}
 			<ion-toolbar color="secondary">
@@ -69,7 +82,10 @@
 	<ion-content class="ion-padding">
 		<div class="safearea width-400">
 			{#if $currentUser}
-				<div class="ion-text-center" style="display: flex; align-items: center; justify-content: center; margin-top: -30px; margin-bottom: 0px;">
+				<div
+					class="ion-text-center"
+					style="display: flex; align-items: center; justify-content: center; margin-top: -30px; margin-bottom: 0px;"
+				>
 					<ion-img
 						style="height: 65px; width: 65px; margin-right: 10px; margin-top: 0px;"
 						src="/icon.svg"
@@ -78,13 +94,28 @@
 						<h1 style="font-size: 30pt;"><b>Diet Tracker</b></h1>
 						<p style="margin-top: -5px;">Track your diet</p>
 					</div>
-				</div>			
+				</div>
 				<div class="center">
 					Welcome back <b>{$currentUser?.name || $currentUser?.email}</b>
 				</div>
 				<br />
+				<ion-button color="secondary" size="large" expand="block" on:click={() => goto('/calendar')}
+					><ion-icon size="large" icon={calendarOutline} />&nbsp;&nbsp;Go to Calendar</ion-button
+				><br />
+				{#if todaysID !== ''}
+					<ion-button color="tertiary" size="large" expand="block" on:click={() => goto(`/day/${todaysID}`)}
+						><ion-icon size="large" icon={todayOutline} />&nbsp;&nbsp;Go to Today</ion-button
+					><br />
+				{:else}
+					<ion-button color="tertiary" size="large" expand="block" on:click={() => goto(`/day/new`)}
+						><ion-icon size="large" icon={todayOutline} />&nbsp;&nbsp;Go to Today</ion-button
+					><br />
+				{/if}
 			{:else}
-				<div class="ion-text-center" style="display: flex; align-items: center; justify-content: center; margin-top: -30px; margin-bottom: 0px;">
+				<div
+					class="ion-text-center"
+					style="display: flex; align-items: center; justify-content: center; margin-top: -30px; margin-bottom: 0px;"
+				>
 					<ion-img
 						style="height: 65px; width: 65px; margin-right: 10px; margin-top: 0px;"
 						src="/icon.svg"
@@ -93,7 +124,7 @@
 						<h1 style="font-size: 30pt;"><b>Diet Tracker</b></h1>
 						<p style="margin-top: -5px;">Track your diet</p>
 					</div>
-				</div>			
+				</div>
 			{/if}
 		</div>
 		{#if !$currentUser}
@@ -101,9 +132,9 @@
 				<ion-button expand="block" on:click={openLoginBox}>Get Started</ion-button>
 			</div>
 		{/if}
-		<div class="flex-container">
+		<!-- <div class="flex-container">
 			<h1>Diet Tracker</h1>
-		</div>
+		</div> -->
 	</ion-content>
 	<ion-footer>
 		{#if !$currentUser}
