@@ -26,11 +26,14 @@
 
 	import { toast } from '$services/toast'
 	import { isOnline } from '$services/network.service'
+	import { pb } from '$services/backend.service'
 
-	onMount(() => {
+	let hostname = ''
+	onMount(async () => {
 		// this is unfortunately needed in order to have the menuController API function properly
 		// without this, clicking on the icon at the top left does not close the menu
 		registerMenu('mainmenu')
+		hostname = await pb.send('/gethost', {"method": "GET"});
 	})
 
 	interface AppPage {
@@ -205,6 +208,7 @@
 		</ion-list>
 	</ion-content>
 	<ion-footer class="ion-padding">
+		<div class="ion-text-center">{ hostname }</div>
 		{#if $currentUser}
 			<div
 				class="pointer centered"
