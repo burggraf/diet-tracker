@@ -108,7 +108,7 @@
 					><br />
 				{:else}
 					<ion-button color="tertiary" size="large" expand="block" on:click={() => goto(`/day/new`)}
-						><ion-icon size="large" icon={todayOutline} />&nbsp;&nbsp;Go to Today</ion-button
+						><ion-icon size="large" icon={todayOutline} />&nbsp;&nbsp;New Entry (Today)</ion-button
 					><br />
 				{/if}
 			{:else}

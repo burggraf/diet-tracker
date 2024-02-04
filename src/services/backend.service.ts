@@ -22,10 +22,10 @@ if (host === 'localhost' || host === '127.0.0.1') port = '8090';
 // get current protocol (http or https)
 const protocol = window.location.protocol;
 apiURL = `${protocol}//${host}`;
-if (port) apiURL += `:${port}`;
+if ((host === 'localhost' || host === '127.0.0.1') && port) apiURL += `:${port}`;
 apiURL += '/';
 
-// console.log('apiURL', apiURL);
+console.log('apiURL', apiURL);
 export const pb = new PocketBase(apiURL);
 
 export let currentUser: any = writable<any | null>(null);
