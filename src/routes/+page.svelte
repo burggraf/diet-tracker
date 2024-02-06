@@ -21,13 +21,13 @@
 	const app_version = __APP_VERSION__
 	const app_name = __APP_NAME__
 	onMount(() => {
-		const page = localStorage.getItem('page')
-		// remove page from localStorage
-		if (page) {
-			localStorage.removeItem('page')
-			goto(page)
-		}
-		return () => {}
+		// const page = localStorage.getItem('page')
+		// // remove page from localStorage
+		// if (page) {
+		// 	localStorage.removeItem('page')
+		// 	goto(page)
+		// }
+		// return () => {}
 	})
 
 	const openLoginBox = async () => {
